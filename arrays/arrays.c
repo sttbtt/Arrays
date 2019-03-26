@@ -117,7 +117,7 @@ void arr_append(Array *arr, char *element) {
   // or throw an error if resize isn't implemented yet.
 
   // Copy the element and add it to the end of the array
-  arr->elements[0] = element;
+  arr->elements[arr->count] = element;
 
   // Increment count by 1
   arr->count++;
