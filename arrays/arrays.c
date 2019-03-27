@@ -95,7 +95,7 @@ char *arr_read(Array *arr, int index) {
  * Insert an element to the array at the given index
  *****/
 void arr_insert(Array *arr, char *element, int index) {
-  char *target = strdup(element);
+  char *element_dup = strdup(element);
   // Throw an error if the index is greater than the current count
   if (index > arr->count) {
     printf("Index out of range.");
@@ -112,7 +112,7 @@ void arr_insert(Array *arr, char *element, int index) {
   }
 
   // Copy the element and add it to the array
-  arr->elements[index] = target;
+  arr->elements[index] = element_dup;
   // Increment count by 1
   arr->count++;
 }
@@ -121,14 +121,14 @@ void arr_insert(Array *arr, char *element, int index) {
  * Append an element to the end of the array
  *****/
 void arr_append(Array *arr, char *element) {
-
+  char *element_dup = strdup(element);
   // Resize the array if the number of elements is over capacity
   // or throw an error if resize isn't implemented yet.
   if (arr->capacity == arr->count) {
     resize_array(arr);
   }
   // Copy the element and add it to the end of the array
-  arr->elements[arr->count] = element;
+  arr->elements[arr->count] = element_dup;
 
   // Increment count by 1
   arr->count++;
@@ -199,13 +199,18 @@ int main(void)
 #endif
 
 
-// Notes:
-// if(index >= arr->count) {   
-//   printf("Out of Index Range\n");     
-//   return NULL;
-//   }
+/* Notes:
 
-// To access an index in the array:
-// index * sizeof(type) + start_address
 
-// make a copy of element before remove
+
+if(index >= arr->count) {   
+  printf("Out of Index Range\n");     
+  return NULL;
+  }
+
+To access an index in the array:
+index * sizeof(type) + start_address
+
+make a copy of element before remove
+
+*/
