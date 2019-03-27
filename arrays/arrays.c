@@ -28,13 +28,12 @@ Array *create_array (int capacity) {
   arr->count = 0;
 
   // Allocate memory for elements
-  arr->elements = malloc(4 * sizeof(char *) * capacity);
+  arr->elements = malloc(sizeof(char *) * capacity);
 
   return arr;
 }
 
-// To access an index in the array:
-// index * sizeof(type) + start_address
+
 
 /*****
  * Free memory for an array and all of its stored elements
@@ -83,9 +82,9 @@ void resize_array(Array *arr) {
 char *arr_read(Array *arr, int index) {
 
   // Throw an error if the index is greater than or equal to the current count
-  if (index > arr->count) {
-    perror("Index out of range.");
-    exit(1);
+  if (index >= arr->count) {
+    printf("Index out of range.\n");
+    return NULL;
   }
   // Otherwise, return the element at the given index
   return arr->elements[index];
@@ -96,26 +95,24 @@ char *arr_read(Array *arr, int index) {
  * Insert an element to the array at the given index
  *****/
 void arr_insert(Array *arr, char *element, int index) {
-
+  char *target = strdup(element);
   // Throw an error if the index is greater than the current count
   if (index > arr->count) {
     printf("Index out of range.");
-    return 1;
+    exit(1);
   }
 
   // Resize the array if the number of elements is over capacity
-  if (arr->capacity = arr->count) {
-    arr->elements = realloc(arr->elements, arr->count + 1);
+  if (arr->capacity <= arr->count) {
+    resize_array(arr);
   }
   // Move every element after the insert index to the right one position
-  for (int i = arr->count - 1; i > index; i--) {
-    char * target = strdup(arr->elements[i]);
-    arr->elements[i + 1] = target;
-
+  for (int i = arr->count; i > index; i--) {
+    arr->elements[i] = arr->elements[i - 1];
   }
 
   // Copy the element and add it to the array
-  arr->elements[index] = element;
+  arr->elements[index] = target;
   // Increment count by 1
   arr->count++;
 }
@@ -127,8 +124,8 @@ void arr_append(Array *arr, char *element) {
 
   // Resize the array if the number of elements is over capacity
   // or throw an error if resize isn't implemented yet.
-  if (arr->capacity = arr->count) {
-    arr->elements = realloc(arr->elements, arr->count + 1);
+  if (arr->capacity == arr->count) {
+    resize_array(arr);
   }
   // Copy the element and add it to the end of the array
   arr->elements[arr->count] = element;
@@ -148,12 +145,21 @@ void arr_remove(Array *arr, char *element) {
 
   // Search for the first occurence of the element and remove it.
   // Don't forget to free its memory!
-
+  int index = arr->capacity + 1;
+  for (int i = 0; i < arr->count; i++) {
+    if (strcmp(arr->elements[i], element) == 0) {
+      index = 1;
+      free(arr->elements[i]);
+    }
+  }
   // Shift over every element after the removed element to the left one position
-
-  // Decrement count by 1
-  //arr->count--;
-
+  if(index < arr->count) {
+    for (int i = index; i < arr->count-1; i++) {
+      arr->elements[i] = arr->elements[i + 1];
+    }
+    // Decrement count by 1
+    arr->count--;
+  }
 }
 
 /*****
@@ -177,6 +183,7 @@ int main(void)
 
   Array *arr = create_array(1);
 
+  // arr_read(arr, 2);
   arr_insert(arr, "STRING1", 0);
   arr_append(arr, "STRING4");
   arr_insert(arr, "STRING2", 0);
@@ -190,3 +197,15 @@ int main(void)
   return 0;
 }
 #endif
+
+
+// Notes:
+// if(index >= arr->count) {   
+//   printf("Out of Index Range\n");     
+//   return NULL;
+//   }
+
+// To access an index in the array:
+// index * sizeof(type) + start_address
+
+// make a copy of element before remove
